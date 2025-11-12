@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三题生成器</title>
+    <!-- 引入Element UI 2.0 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.13/lib/theme-chalk/index.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-image 0.5s ease;
+            background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* 移动端背景 */
+        @media (max-width: 768px) {
+            body {
+                background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba');
+                padding: 10px;
+                align-items: flex-start;
+            }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 移动端容器调整 */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+                margin: 10px auto;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* 移动端标题调整 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.6rem;
+                margin: 5px 0;
+            }
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nouns-section {
+            margin-bottom: 20px;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .card-item {
+            flex: 0 0 32%;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            min-height: 100px;
+            transition: all 0.3s ease;
+        }
+
+        .card-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 移动端卡片调整 */
+        @media (max-width: 768px) {
+            .card-item {
+                flex: 0 0 100%;
+                margin-bottom: 8px;
+                min-height: 80px;
+            }
+            
+            .card-item h2 {
+                font-size: 1.3rem;
+                margin: 5px 0;
+            }
+        }
+
+        .article-type-section {
+            margin-bottom: 20px;
+        }
+
+        .article-type-content {
+            text-align: center;
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .article-type-content h1 {
+                font-size: 1.4rem;
+                margin: 5px 0;
+            }
+        }
+
+        .refresh-btn {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .timestamp {
+            text-align: center;
+            color: #606266;
+            font-size: 14px;
+            padding: 10px 0;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 5px;
+        }
+
+        /* 移动端时间戳调整 */
+        @media (max-width: 768px) {
+            .timestamp {
+                font-size: 12px;
+                padding: 8px 0;
+            }
+        }
+
+        .el-card {
+            background-color: rgba(255, 255, 255, 0.5) !important;
+            border: none;
+        }
+
+        .el-card__header {
+            padding: 12px 20px;
+            background-color: rgba(64, 158, 255, 0.1);
+            border-bottom: 1px solid rgba(64, 158, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .el-card__header {
+                padding: 8px 15px;
+            }
+            
+            .el-card__header span {
+                font-size: 0.95rem;
+            }
+        }
+
+        .el-button {
+            padding: 12px 25px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .el-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .el-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="header">
+            <h1>三题生成器</h1>
+        </div>
+
+        <div class="content">
+            <div class="nouns-section">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>三题名词</span>
+                    </div>
+                    <div class="card-container">
+                        <div class="card-item" v-for="(noun, index) in nouns" :key="index">
+                            <h2>{{ noun }}</h2>
+                        </div>
+                    </div>
+                </el-card>
+            </div>
+
+            <div class="article-type-section">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>文章类型</span>
+                    </div>
+                    <div class="article-type-content">
+                        <h1>{{ articleType }}</h1>
+                    </div>
+                </el-card>
+            </div>
+
+            <div class="refresh-btn">
+                <el-button type="primary" @click="refreshContent" icon="el-icon-refresh">刷新内容</el-button>
+            </div>
+
+            <div class="timestamp">
+                生成时间: {{ timestamp }}
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入Vue和Element UI -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/element-ui@2.15.13/lib/index.min.js"></script>
+    
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                nouns: [],
+                articleType: '',
+                timestamp: ''
+            },
+            created() {
+                this.refreshContent();
+            },
+            methods: {
+                refreshContent() {
+                    // 名词库
+                    const nounPool = [
+                        '癌变', '癌细胞', '癌症', '矮凳', '矮人', '矮子', '阿爸', '阿波罗',
+                        '宝剑', '月光', '森林', '河流', '城堡', '骑士', '魔法', '巨龙',
+                        '时光', '记忆', '梦境', '现实', '秘密', '命运', '选择', '希望'
+                    ];
+                    
+                    // 文章类型库
+                    const articleTypePool = [
+                        '武侠小说', '历史小说', '推理小说', '传记小说', '军事小说', 
+                        '言情小说', '玄幻小说', '科幻小说', '网游小说', '校园小说', 
+                        '穿越小说', '魔幻小说', '恐怖小说', '悬疑小说', '冒险小说'
+                    ];
+                    
+                    // 随机选择三个不重复的名词
+                    this.nouns = [];
+                    const tempNouns = [...nounPool];
+                    for (let i = 0; i < 3; i++) {
+                        if (tempNouns.length === 0) break;
+                        const randomIndex = Math.floor(Math.random() * tempNouns.length);
+                        this.nouns.push(tempNouns[randomIndex]);
+                        tempNouns.splice(randomIndex, 1);
+                    }
+                    
+                    // 随机选择一个文章类型
+                    this.articleType = articleTypePool[Math.floor(Math.random() * articleTypePool.length)];
+                    
+                    // 更新时间戳
+                    this.updateTimestamp();
+                },
+                updateTimestamp() {
+                    const now = new Date();
+                    this.timestamp = now.toLocaleString('zh-CN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
