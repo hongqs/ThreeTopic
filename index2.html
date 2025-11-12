@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三题生成器</title>
+    <!-- 引入Element UI 2.0 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.13/lib/theme-chalk/index.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-image 0.5s ease;
+        }
+
+        /* 默认背景（PC端） */
+        body {
+            background-image: url('01.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* 移动端背景 */
+        @media (max-width: 768px) {
+            body {
+                background-image: url('02.jpg');
+                padding: 10px;
+            }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        /* 移动端容器调整 */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+                margin: 10px auto;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* 移动端标题调整 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+                margin: 10px 0;
+            }
+        }
+
+        .content {
+            margin-bottom: 20px;
+        }
+
+        .timestamp {
+            text-align: center;
+            margin-top: 15px;
+            color: #909399;
+            font-size: 14px;
+        }
+
+        /* 移动端时间戳调整 */
+        @media (max-width: 768px) {
+            .timestamp {
+                font-size: 12px;
+                margin-top: 10px;
+            }
+        }
+
+        .refresh-btn {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .el-card {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .el-card__body {
+            background-color: transparent;
+        }
+
+        .card-item {
+            flex: 0 0 30%;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 移动端卡片调整 */
+        @media (max-width: 768px) {
+            .card-item {
+                flex: 0 0 100%;
+                margin-bottom: 10px;
+                padding: 10px;
+            }
+            
+            .card-item h2 {
+                font-size: 1.2rem;
+                margin: 10px 0;
+            }
+        }
+
+        .container .el-card {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .container .el-card__body {
+            background: transparent !important;
+        }
+
+        /* 文章类型区域调整 */
+        .article-type-card {
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .article-type-card h1 {
+                font-size: 1.3rem;
+                margin: 10px 0;
+            }
+        }
+
+        /* 卡片标题调整 */
+        .el-card__header {
+            padding: 12px 20px;
+        }
+
+        @media (max-width: 768px) {
+            .el-card__header {
+                padding: 10px 15px;
+            }
+            
+            .el-card__header span {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="header">
+            <h1>三题生成器</h1>
+        </div>
+
+        <div class="content">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>三题名词</span>
+                </div>
+                <div class="card-container">
+                    <el-card class="card-item" v-for="(noun, index) in nouns" :key="index">
+                        <div style="text-align: center; padding: 20px 0;">
+                            <h2>{{ noun }}</h2>
+                        </div>
+                    </el-card>
+                </div>
+            </el-card>
+
+            <el-card class="box-card article-type-card">
+                <div slot="header" class="clearfix">
+                    <span>文章类型</span>
+                </div>
+                <div style="text-align: center; padding: 20px 0;">
+                    <h1>{{ articleType }}</h1>
+                </div>
+            </el-card>
+
+            <div class="refresh-btn">
+                <el-button type="primary" @click="refreshContent" icon="el-icon-refresh">刷新内容</el-button>
+            </div>
+
+            <div class="timestamp">
+                生成时间: {{ timestamp }}
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入Vue和Element UI -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/element-ui@2.15.13/lib/index.min.js"></script>
+    
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                nouns: [],
+                articleType: '',
+                timestamp: ''
+            },
+            created() {
+                this.refreshContent();
+            },
+            methods: {
+                refreshContent() {
+                    // 名词库
+                    const nounPool = [
+                        '癌变', '时间', '记忆', '梦境', '影子', '回声', '迷雾', '星辰', 
+                        '命运', '希望', '勇气', '智慧', '爱情', '友谊', '自由', '和平',
+                        '战争', '背叛', '忠诚', '牺牲', '重生', '永恒', '瞬间', '远方'
+                    ];
+                    
+                    // 文章类型库
+                    const articleTypePool = [
+                        '武侠小说', '历史小说', '推理小说', '传记小说', '军事小说', 
+                        '言情小说', '玄幻小说', '科幻小说', '网游小说', '校园小说', 
+                        '穿越小说', '魔幻小说', '恐怖小说'
+                    ];
+                    
+                    // 随机选择三个不重复的名词
+                    this.nouns = [];
+                    const tempNouns = [...nounPool];
+                    for (let i = 0; i < 3; i++) {
+                        if (tempNouns.length === 0) break;
+                        const randomIndex = Math.floor(Math.random() * tempNouns.length);
+                        this.nouns.push(tempNouns[randomIndex]);
+                        tempNouns.splice(randomIndex, 1);
+                    }
+                    
+                    // 随机选择一个文章类型
+                    this.articleType = articleTypePool[Math.floor(Math.random() * articleTypePool.length)];
+                    
+                    // 更新时间戳
+                    this.updateTimestamp();
+                },
+                updateTimestamp() {
+                    const now = new Date();
+                    this.timestamp = now.toLocaleString('zh-CN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
